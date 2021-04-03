@@ -10,7 +10,8 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import { Button } from "reactstrap";
 import AddTodo from "./AddTodo";
-import axios from "axios";
+import { useDispatch } from "react-redux";
+import { deleteTodo } from "../redux/actions/todos";
 const columns = [
   { id: "_id", label: "ID", minWidth: 170 },
   { id: "taskName", label: "Task Name", minWidth: 100 },
@@ -40,6 +41,7 @@ const useStyles = makeStyles({
 });
 
 export default function StickyHeadTable(props) {
+  const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
@@ -54,13 +56,12 @@ export default function StickyHeadTable(props) {
   };
 
   const deleteHandler = (index) => {
-    axios.delete("http://localhost:8080/deleteToDo", {
-      data: { id: props.data[index]._id },
-    });
+    dispatch(deleteTodo({ data: { id: props.data[index]._id, index: index } }));
   };
 
   return (
     <>
+    
       {modal == true ? (
         <AddTodo
           type={"edit"}
@@ -68,6 +69,7 @@ export default function StickyHeadTable(props) {
           modal={modal}
           setModal={setModal}
           data={props.data[ind]}
+          indexxx={ind}
         />
       ) : null}
       <Paper className={classes.root}>
@@ -90,8 +92,15 @@ export default function StickyHeadTable(props) {
               {props.data
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  let indx = rowsPerPage==10? index + page*10 :rowsPerPage==25?index + page*25 :rowsPerPage==100?index + page*100:index 
-                  
+                  let indx =
+                    rowsPerPage == 10
+                      ? index + page * 10
+                      : rowsPerPage == 25
+                      ? index + page * 25
+                      : rowsPerPage == 100
+                      ? index + page * 100
+                      : index;
+
                   return (
                     <TableRow
                       hover

@@ -3,19 +3,18 @@ import Button from "@material-ui/core/Button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Container from "@material-ui/core/Container";
-import {Link, Redirect} from 'react-router-dom'
-import axios from 'axios'
-function SignUp({history}) {
+import { Link } from "react-router-dom";
+import axios from "axios";
+function SignUp({ history }) {
   const initialValues = {
-    name:"",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   };
   const validationSchema = () =>
     Yup.object({
-      name: Yup.string()
-        .required("Required!").trim(),
+      name: Yup.string().required("Required!").trim(),
       email: Yup.string()
         .email("Please enter valid email")
         .required("Required!"),
@@ -28,34 +27,19 @@ function SignUp({history}) {
     });
 
   const onSubmit = () => {
-    if(formik.values.password===formik.values.confirmPassword){
-      axios.post('https://mytodo-backend.herokuapp.com/sign-up', {
-      name: formik.values.name,
-      email: formik.values.email,
-      password : formik.values.password
-    },)
+    if (formik.values.password === formik.values.confirmPassword) {
+      axios
+        .post("https://mytodo-backend.herokuapp.com/sign-up", {
+          name: formik.values.name,
+          email: formik.values.email,
+          password: formik.values.password,
+        })
 
-   //Alternate way of using fetch 
-    // fetch('https://mytodo-backend.herokuapp.com/sign-up',{
-    //   method:"POST",
-    //   body:JSON.stringify({
-    //       name: formik.values.name,
-    //          email: formik.values.email,
-    //          password : formik.values.password
-    //      })
-    //   ,
-    //   headers:{
-    //     "Content-Type":"application/json"
-    //   },
-    //   credentials:"include",
-      
-      
-    // })
-    .then(function (response) {
-      history.push('/')
-    })
-    .catch(function (error) {
-    });}
+        .then(function (response) {
+          history.push("/");
+        })
+        .catch(function (error) {});
+    }
   };
   const formik = useFormik({
     initialValues,
@@ -67,7 +51,7 @@ function SignUp({history}) {
     <Container component="main" maxWidth="xs">
       <div>
         <form onSubmit={formik.handleSubmit}>
-        <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -130,14 +114,18 @@ function SignUp({history}) {
             value={formik.values.confirmPassword}
             helperText={formik.errors.confirmPassword}
             error={
-              formik.errors.confirmPassword && formik.touched.confirmPassword ? true : false
+              formik.errors.confirmPassword && formik.touched.confirmPassword
+                ? true
+                : false
             }
           />
           <Button type="submit" fullWidth variant="contained" color="primary">
             Sign Up
           </Button>
         </form>
-        <p>Already have account <Link to="/login">Login</Link></p>
+        <p>
+          Already have account <Link to="/login">Login</Link>
+        </p>
       </div>
     </Container>
   );

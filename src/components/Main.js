@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Container from "@material-ui/core/Container";
-import { useDispatch } from "react-redux";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import Table from "./Table";
 import Header from "./Header";
 import { Button } from "reactstrap";
 import AddTodo from "./AddTodo";
+import { getTodo } from "../redux/actions/todos";
 const Main = ({ detail }) => {
-  
   let userDetail = detail.email;
-  const [taskList, setTaskList] = useState([]);
-
+  const { todoList } = useSelector((state) => state.todoDetails);
+  const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
-    axios
-      .post("http://localhost:8080/getTodo", { email: userDetail })
-      .then((res) => {
-        setTaskList(res.data);
-      });
-  }, [taskList]);
+    dispatch(getTodo(userDetail));
+  }, []);
 
   return (
     <>
@@ -46,7 +41,7 @@ const Main = ({ detail }) => {
           </Button>
         </div>
 
-        <Table userDetail={userDetail} data={taskList} />
+        <Table userDetail={userDetail} data={todoList} />
       </Container>
     </>
   );
