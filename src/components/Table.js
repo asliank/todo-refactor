@@ -12,11 +12,13 @@ import { Button } from "reactstrap";
 import AddTodo from "./AddTodo";
 import { useDispatch } from "react-redux";
 import { deleteTodo } from "../redux/actions/todos";
+import swal from "sweetalert";
 const columns = [
   { id: "_id", label: "ID", minWidth: 170 },
   { id: "taskName", label: "Task Name", minWidth: 100 },
+  { id: "taskDescription", label: "Description", minWidth: 100 },
   {
-    id: "email",
+    id: "taskPriority",
     label: "Priority",
     minWidth: 170,
     align: "right",
@@ -24,7 +26,7 @@ const columns = [
   },
   {
     id: "buttons",
-    label: "buttons",
+    label: "Edit / Delete",
     minWidth: 170,
     align: "right",
     format: (value) => value.toLocaleString("en-US"),
@@ -56,12 +58,26 @@ export default function StickyHeadTable(props) {
   };
 
   const deleteHandler = (index) => {
-    dispatch(deleteTodo({ data: { id: props.data[index]._id, index: index } }));
+    swal({
+      title: "Are you sure?",
+      text: "Your task will be deleted !",
+      icon: "warning",
+      buttons: [true, "Confirm"],
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        dispatch(
+          deleteTodo({ data: { id: props.data[index]._id, index: index } })
+        );
+        swal("Task has been deleted sucessfully!", {
+          icon: "success",
+        });
+      }
+    });
   };
 
   return (
     <>
-    
       {modal == true ? (
         <AddTodo
           type={"edit"}

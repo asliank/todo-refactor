@@ -3,18 +3,37 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import TextField from "@material-ui/core/TextField";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import MenuItem from "@material-ui/core/MenuItem";
 import { useDispatch } from "react-redux";
 import { addTodo, editTodo } from "../redux/actions/todos";
 const AddTodo = (props) => {
   const dispatch = useDispatch();
   const { buttonLabel, className } = props;
 
+  const priorities = [
+    {
+      value: "LOW",
+      label: "LOW",
+    },
+    {
+      value: "MEDIUM",
+      label: "MEDIUM  ",
+    },
+    {
+      value: "HIGH",
+      label: "HIGH",
+    },
+    {
+      value: "CRITICAL",
+      label: "CRITICAL",
+    },
+  ];
+
   const toggle = () => props.setModal(!props.modal);
   const initialValues = {
     taskName: props.type === "add" ? "" : props.data.taskName,
     taskDescription: props.type === "add" ? "" : props.data.taskDescription,
-    taskPriority: props.type === "add" ? "" : props.data.taskPriority,
+    taskPriority: props.type === "add" ? "LOW" : props.data.taskPriority,
   };
   const typeAdd = () => {
     dispatch(
@@ -101,22 +120,25 @@ const AddTodo = (props) => {
           />
           <TextField
             variant="outlined"
-            margin="normal"
-            required
             fullWidth
             id="taskPriority"
-            label="Enter Task Priority"
-            name="taskPriority"
+            select
+            label="Task Priority"
             onBlur={formik.handleBlur("taskPriority")}
-            onChange={formik.handleChange("taskPriority")}
             value={formik.values.taskPriority}
-            helperText={formik.errors.taskPriority}
+            onChange={formik.handleChange("taskPriority")}
             error={
               formik.errors.taskPriority && formik.touched.taskPriority
                 ? true
                 : false
             }
-          />
+          >
+            {priorities.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={formik.handleSubmit}>
